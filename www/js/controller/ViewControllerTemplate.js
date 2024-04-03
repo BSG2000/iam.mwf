@@ -11,12 +11,6 @@ export default class ViewControllerTemplate extends mwf.ViewController {
     root;
     // TODO-REPEATED: declare custom instance attributes for this controller
 
-    constructor() {
-        super();
-
-        console.log("ViewControllerTemplate()");
-    }
-
     /*
      * for any view: initialise the view
      */
@@ -27,6 +21,21 @@ export default class ViewControllerTemplate extends mwf.ViewController {
         // call the superclass once creation is done
         super.oncreate();
     }
+
+    constructor() {
+        super();
+
+        console.log("ViewControllerTemplate()");
+    }
+
+    /*
+     * for views that initiate transitions to other views
+     * NOTE: return false if the view shall not be returned to, e.g. because we immediately want to display its previous view. Otherwise, do not return anything.
+     */
+    async onReturnFromNextView(nextviewid, returnValue, returnStatus) {
+        // TODO: check from which view, and possibly with which status, we are returning, and handle returnValue accordingly
+    }
+
 
     /*
      * for views with listviews: bind a list item to an item view
@@ -61,14 +70,6 @@ export default class ViewControllerTemplate extends mwf.ViewController {
         super.bindDialog(dialogid, dialogview, dialogdataobj);
 
         // TODO: implement action bindings for dialog, accessing dialog.root
-    }
-
-    /*
-     * for views that initiate transitions to other views
-     * NOTE: return false if the view shall not be returned to, e.g. because we immediately want to display its previous view. Otherwise, do not return anything.
-     */
-    async onReturnFromNextView(nextviewid, returnValue, returnStatus) {
-        // TODO: check from which view, and possibly with which status, we are returning, and handle returnValue accordingly
     }
 
 }
