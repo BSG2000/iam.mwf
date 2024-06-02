@@ -727,7 +727,7 @@ class ViewController {
         console.log("prepareListviews()");
         // read out listviews (! we might have more than a single listview, see e.g. types search results in spotify etc.)
         var listviews = this.root.getElementsByClassName("mwf-listview");
-        if (listviews.length == 0) {
+        if (listviews.length === 0) {
             console.log("prepareListviews(): view " + this.root.id + " does not use listviews");
         }
         else if (this.listviewsPrepared) {
