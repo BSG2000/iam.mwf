@@ -6,7 +6,7 @@
  * - all application specific module implementations are explicitly imported here
  * and will be published by this module
  * - all dependencies among application modules are resolved via this module
- * - this way, only Main.js needs to be aware of the actual implementations of
+ * - this way, only Main.js needs to be aware of the actual implementations
  * of modules, whereas the modules themselves are agnostic with respect to the
  * implementation of their dependencies
  * - in the same way, all dependencies to framework modules are resolved
@@ -35,7 +35,9 @@ import MyApplication from "./MyApplication.js";
 import * as entities from "./model/MyEntities.js";
 /* application libraries: view controllers */
 import MyInitialViewController from "./controller/MyInitialViewController.js";
-// TODO-REPEATED: import any further view controllers here
+/* any further view controllers... */
+import ListviewViewController from "./controller/ListviewViewController.js";
+import ReadviewViewController from "./controller/ReadviewViewController.js";
 
 
 // we export the framework modules required by the application and the application modules required by the framework
@@ -52,8 +54,10 @@ export {
     /* application modules */
     MyApplication,
     entities,
-    MyInitialViewController,
+    MyInitialViewController,/*!!!*/
     // TODO-REPEATED: export any further view controllers here
+    ListviewViewController,/*!!!*/
+    ReadviewViewController
 }
 
 // then start the application

@@ -5,28 +5,36 @@
 import {mwf} from "../Main.js";
 import {entities} from "../Main.js";
 
-export default class ViewControllerTemplate extends mwf.ViewController {
+export default class ReadviewViewController extends mwf.ViewController {
 
     // instance attributes set by mwf after instantiation
     args;
     root;
-    // TODO-REPEATED: declare custom instance attributes for this controller
+    // custom instance attributes for this controller
+    viewProxy;
+
+    constructor() {
+        super();
+
+        console.log("ReadviewViewController()");
+    }
 
     /*
      * for any view: initialise the view
      */
     async oncreate() {
         // TODO: do databinding, set listeners, initialise the view
-
+        var mediaItem = this.args.item; //new entities.MediaItem("m", "https://picsum.photos/300/400");
+        this.viewProxy = this.bindElement("mediaReadviewTemplate", {item: mediaItem}, this.root).viewProxy;
+        this.viewProxy.bindAction("deleteItem", (() => {
+            mediaItem.delete().then(() => {
+                this.notifyListeners(new mwf.Event("crud", "deleted", "MediaItem", mediaItem._id));
+                this.previousView({deletedItem: mediaItem});
+            })
+        }));
 
         // call the superclass once creation is done
         super.oncreate();
-    }
-
-    constructor() {
-        super();
-
-        console.log("ViewControllerTemplate()");
     }
 
     /*
