@@ -8,7 +8,8 @@ module.exports = {
 }
 
 
-const mdbhost = "127.0.0.1";
+//const mdbhost = "127.0.0.1";
+const mdbhost = process.env.MONGO_URL || "127.0.0.1";
 const mdbport = 27017;
 const mdbConnectTimeoutMS = 500;
 const mdbSelectionTimeoutMS = 2500;
@@ -21,7 +22,8 @@ function CRUDImpl(tenant) {
     // determine the databaseUrl escaping characters if necessary
     var databaseBaseUrl = "mongodb://" + mdbhost + ":" + mdbport + "/";
     var databaseName = encodeURIComponent(tenant ? tenant.name : "mwfdb");
-    var databaseUrl = "mongodb://" + mdbhost + ":" + mdbport + "/" + databaseName;
+    // var databaseUrl = "mongodb://" + mdbhost + ":" + mdbport + "/" + databaseName;
+    const databaseUrl = process.env.MONGO_URL || `mongodb://${mdbhost}:${mdbport}/mwfdb`;
     var databaseLogPrefix = tenant ? tenant.name : "";
 
     // use our own utility functions
