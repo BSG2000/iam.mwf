@@ -12,6 +12,7 @@ class MyApplication extends mwf.Application {
 
     constructor() {
         super();
+        this.currentCRUDScope = this.CRUDOPS.LOCAL; // Initialisierungswert
     }
 
     async oncreate() {
@@ -38,11 +39,21 @@ class MyApplication extends mwf.Application {
         this.registerCRUD("MediaItem", this.CRUDOPS.REMOTE, GenericCRUDImplRemote.newInstance("MediaItem"));
 
         // activate the local crud operations
-        this.initialiseCRUD(this.CRUDOPS.LOCAL,EntityManager);
+        this.initialiseCRUD(this.CRUDOPS.LOCAL, EntityManager);
 
         // THIS MUST NOT BE FORGOTTEN: initialise the entity manager!
         EntityManager.initialise();
     };
+
+    // Methode zum Umschalten des CRUD-Modus
+    switchCRUD(newMode) {
+        this.currentCRUDScope = newMode;
+        if (newMode === this.CRUDOPS.LOCAL) {
+            this.initialiseCRUD(this.CRUDOPS.LOCAL, EntityManager);
+        } else {
+            this.initialiseCRUD(this.CRUDOPS.REMOTE, EntityManager);
+        }
+    }
 }
 
 const application = new MyApplication();

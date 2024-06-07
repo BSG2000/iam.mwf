@@ -1,7 +1,7 @@
 /**
  * @author Jörn Kreutel
  */
-import {mwf} from "../Main.js";
+import {mwf, MyApplication} from "../Main.js";
 import {entities} from "../Main.js";
 
 export default class ListviewViewController extends mwf.ViewController {
@@ -13,28 +13,42 @@ export default class ListviewViewController extends mwf.ViewController {
     // custom instance attributes for this controller
     items;
     addNewMediaItemElement;
+    switchCRUDButton;
+    crudModeIndicator;
 
     constructor() {
         super();
-
         this.addNewMediaItemElement = null;
+        this.switchCRUDButton = null;
+        this.crudModeIndicator = null;
     }
 
     /*
      * for any view: initialise the view
      */
     async oncreate() {
-        // TODO: do databinding, set listeners, initialise the view
+        // do databinding, set listeners, initialise the view
         this.addNewMediaItemElement = this.root.querySelector("#addNewMediaItem");
+        this.switchCRUDButton = this.root.querySelector("#switchCRUDButton");
+        this.crudModeIndicator = this.root.querySelector("#crudModeIndicator");
+
+        // Setzen des initialen CRUD-Modus Indikators
+        this.updateCrudModeIndicator();
+
+        // Event-Listener für die Schaltfläche "Neues Medium hinzufügen"
         this.addNewMediaItemElement.onclick = (() => {
             // this.crudops.create(new entities.MediaItem("m", "https://picsum.photos/200/200")).then((created) => {
             //        this.addToListview(created);
             //    });
             this.createNewItem();
         });
-        /*        this.crudops.readAll().then((items) => {
-                    this.initialiseListview(this.items);
-                });*/
+
+        // Event-Listener für die Schaltfläche "CRUD-Modus wechseln"
+        this.switchCRUDButton.onclick = (() => {
+            this.switchCRUDMode();
+        });
+
+        // Event-Listener für CRUD-Operationen
         this.addListener(new mwf.EventMatcher("crud", "created", "MediaItem"), ((event) => {
             this.addToListview(event.data);
         }));
@@ -45,11 +59,32 @@ export default class ListviewViewController extends mwf.ViewController {
             this.removeFromListview(event.data);
         }));
 
+        // Initialisieren der Listenansicht mit Elementen aus dem aktuellen CRUD-Modus
+        this.loadMediaItems();
+
+        // Superklasse aufrufen, sobald die Erstellung abgeschlossen ist
+        super.oncreate();
+    }
+
+    // Funktion zum Aktualisieren des CRUD-Modus Indikators
+    updateCrudModeIndicator() {
+        this.crudModeIndicator.textContent = MyApplication.currentCRUDScope;
+
+    }
+
+    // Funktion zum Umschalten des CRUD-Modus
+    switchCRUDMode() {
+        const newMode = (MyApplication.currentCRUDScope === MyApplication.CRUDOPS.LOCAL) ? MyApplication.CRUDOPS.REMOTE : MyApplication.CRUDOPS.LOCAL;
+        MyApplication.switchCRUD(newMode);
+        this.updateCrudModeIndicator();
+        this.loadMediaItems();
+    }
+
+    // Funktion zum Laden der Media Items basierend auf dem aktuellen CRUD-Modus
+    loadMediaItems() {
         entities.MediaItem.readAll().then((items) => {
             this.initialiseListview(items);
         });
-        // call the superclass once creation is done
-        super.oncreate();
     }
 
     /*
@@ -92,7 +127,7 @@ export default class ListviewViewController extends mwf.ViewController {
         //    this.removeFromListview(item._id);
         // });
         item.delete().then(() => {
-        //     this.removeFromListview(item._id);
+            //     this.removeFromListview(item._id);
         });
     }
 
@@ -102,7 +137,7 @@ export default class ListviewViewController extends mwf.ViewController {
                 submitForm: ((event) => {
                     event.original.preventDefault();
                     item.update().then(() => {
-                    //     this.updateInListview(item._id, item);
+                        //     this.updateInListview(item._id, item);
                     });
                     this.hideDialog();
                 }),/* !!! */
@@ -121,7 +156,7 @@ export default class ListviewViewController extends mwf.ViewController {
                 submitForm: ((event) => {
                     event.original.preventDefault();
                     newItem.create().then(() => {
-                    //     this.addToListview(newItem);
+                        //     this.addToListview(newItem);
                     });
                     this.hideDialog()
                 })
