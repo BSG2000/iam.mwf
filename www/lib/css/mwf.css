@@ -981,3 +981,8 @@ fieldset.mwf-material input:-webkit-autofill {
     filter: invert(50%);
     -webkit-filter: invert(50%);
 }
+
+.mwf-flex-container {
+    display: flex;
+    align-items: center;
+}
