@@ -3,3 +3,8 @@
     width: 100%;
     max-width: 100%;
 }
+
+.mwf-flex-container {
+    display: flex;
+    align-items: center;
+}
