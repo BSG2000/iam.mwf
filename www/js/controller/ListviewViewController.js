@@ -108,6 +108,7 @@ export default class ListviewViewController extends mwf.ViewController {
      */
     onListItemMenuItemSelected(menuitemview, itemobj, listview) {
         // implement how selection of the option menuitemview for itemobj shall be handled
+
         super.onListItemMenuItemSelected(menuitemview, itemobj, listview);
     }
 
@@ -123,17 +124,26 @@ export default class ListviewViewController extends mwf.ViewController {
     }
 
     deleteItem(item) {
-        // this.crudops.delete(item._id).then(() => {
-        //    this.removeFromListview(item._id);
-        // });
-        item.delete().then(() => {
-            //     this.removeFromListview(item._id);
+        this.showDialog("deleteConfirmationDialog", {
+            item: item,
+            actionBindings: {
+                cancelDelete: (() => {
+                    this.hideDialog();
+                }),
+                confirmDelete: (() => {
+                    item.delete().then(() => {
+                        this.removeFromListview(item._id);
+                    });
+                    this.hideDialog();
+                })
+            }
         });
     }
 
     editItem(item) {
         this.showDialog("mediaItemDialog", {
-            item: item, actionBindings: {
+            item: item,
+            actionBindings: {
                 submitForm: ((event) => {
                     event.original.preventDefault();
                     item.update().then(() => {
