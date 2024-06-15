@@ -67,6 +67,7 @@
         </ul>
     </main>
 </div>
+<!-- Detailansicht / Leseansicht -->
 <div class="mwf-view" id="mediaReadview" data-mwf-viewcontroller="ReadviewViewController">
     <div class="mwf-template mwf-databind" data-mwf-templatename="mediaReadviewTemplate">
         <header>
@@ -76,6 +77,7 @@
         </header>
         <main class="mwf-scrollview">
             <img src="{{item.src}}" alt="{{item.title}}"/>
+            <p>{{item.description}}</p> <!-- Beschreibung unterhalb des Bildes -->
         </main>
         <footer>
             <button class="mwf-back mwf-imgbutton mwf-img-backward"></button>
