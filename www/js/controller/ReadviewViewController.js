@@ -10,6 +10,7 @@ export default class ReadviewViewController extends mwf.ViewController {
     // instance attributes set by mwf after instantiation
     args;
     root;
+
     // custom instance attributes for this controller
     viewProxy;
 
@@ -23,18 +24,42 @@ export default class ReadviewViewController extends mwf.ViewController {
      * for any view: initialise the view
      */
     async oncreate() {
-        // TODO: do databinding, set listeners, initialise the view
-        var mediaItem = this.args.item; //new entities.MediaItem("m", "https://picsum.photos/300/400");
-        this.viewProxy = this.bindElement("mediaReadviewTemplate", {item: mediaItem}, this.root).viewProxy;
+        // initialize the view with data and event listeners
+        var mediaItem = this.args.item;
+        this.viewProxy = this.bindElement("mediaReadviewTemplate", { item: mediaItem }, this.root).viewProxy;
+
         this.viewProxy.bindAction("deleteItem", (() => {
-            mediaItem.delete().then(() => {
-                this.notifyListeners(new mwf.Event("crud", "deleted", "MediaItem", mediaItem._id));
-                this.previousView({deletedItem: mediaItem});
-            })
+            this.showDeleteConfirmationDialog(mediaItem);
         }));
 
-        // call the superclass once creation is done
+        this.viewProxy.bindAction("editItem", (() => {
+            this.editItem(mediaItem);
+        }));
+
+        // Call super.oncreate() to complete setup
         super.oncreate();
+    }
+
+    showDeleteConfirmationDialog(mediaItem) {
+        this.showDialog("deleteConfirmationDialog", {
+            item: mediaItem,
+            actionBindings: {
+                cancelDelete: (() => {
+                    this.hideDialog();
+                }),
+                confirmDelete: (() => {
+            mediaItem.delete().then(() => {
+                this.notifyListeners(new mwf.Event("crud", "deleted", "MediaItem", mediaItem._id));
+                        this.previousView({ deletedItem: mediaItem });
+                    });
+                    this.hideDialog();
+            })
+            }
+        });
+    }
+
+    editItem(mediaItem) {
+        this.nextView("mediaEditview", { item: mediaItem });
     }
 
     /*
@@ -44,7 +69,6 @@ export default class ReadviewViewController extends mwf.ViewController {
     async onReturnFromNextView(nextviewid, returnValue, returnStatus) {
         // TODO: check from which view, and possibly with which status, we are returning, and handle returnValue accordingly
     }
-
 
     /*
      * for views with listviews: bind a list item to an item view
@@ -80,6 +104,4 @@ export default class ReadviewViewController extends mwf.ViewController {
 
         // TODO: implement action bindings for dialog, accessing dialog.root
     }
-
 }
-
