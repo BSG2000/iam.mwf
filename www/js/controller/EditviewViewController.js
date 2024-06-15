@@ -41,7 +41,7 @@ export default class EditviewViewController extends mwf.ViewController {
             this.showDeleteConfirmationDialog(mediaItem);
         }));
 
-        this.viewProxy.bindAction("saveItem", ((event) => {
+        this.viewProxy.bindAction("saveItem", (() => {
             this.saveItem(mediaItem);
         }));
 
@@ -78,11 +78,13 @@ export default class EditviewViewController extends mwf.ViewController {
 
         if (!mediaItem.created) {
             mediaItem.create().then(() => {
-                this.previousView();
+                this.notifyListeners(new mwf.Event("crud", "created", "MediaItem", mediaItem));
+                this.previousView({ createdItem: mediaItem });
             });
         } else {
             mediaItem.update().then(() => {
-                this.previousView();
+                this.notifyListeners(new mwf.Event("crud", "updated", "MediaItem", mediaItem));
+                this.previousView({ updatedItem: mediaItem });
             });
         }
     }
