@@ -12,12 +12,16 @@ export default class ListviewViewController extends mwf.ViewController {
     addNewMediaItemElement;
     switchCRUDButton;
     crudModeIndicator;
+    lastUpdatedItemId;
+    addedItemIds; // Set to track added items
 
     constructor() {
         super();
         this.addNewMediaItemElement = null;
         this.switchCRUDButton = null;
         this.crudModeIndicator = null;
+        this.lastUpdatedItemId = null; // To keep track of the last updated item
+        this.addedItemIds = new Set(); // Initialize the Set to track added items
     }
 
     /*
@@ -34,9 +38,6 @@ export default class ListviewViewController extends mwf.ViewController {
 
         // Event-Listener für die Schaltfläche "Neues Medium hinzufügen"
         this.addNewMediaItemElement.onclick = (() => {
-            // this.crudops.create(new entities.MediaItem("m", "https://picsum.photos/200/200")).then((created) => {
-            //        this.addToListview(created);
-            //    });
             this.createNewItem();
         });
 
@@ -47,10 +48,12 @@ export default class ListviewViewController extends mwf.ViewController {
 
         // Event-Listener für CRUD-Operationen
         this.addListener(new mwf.EventMatcher("crud", "created", "MediaItem"), ((event) => {
-            this.addToListview(event.data);
+            this.addItemToListview(event.data);
+            this.lastUpdatedItemId = event.data._id; // Keep track of the new item
         }));
         this.addListener(new mwf.EventMatcher("crud", "updated", "MediaItem"), ((event) => {
             this.updateInListview(event.data._id, event.data);
+            this.lastUpdatedItemId = event.data._id; // Keep track of the updated item
         }));
         this.addListener(new mwf.EventMatcher("crud", "deleted", "MediaItem"), ((event) => {
             this.removeFromListview(event.data);
@@ -161,7 +164,36 @@ export default class ListviewViewController extends mwf.ViewController {
     copyItem(item) {
         var copiedItem = new entities.MediaItem(item.title + " (Kopie)", item.src, item.contentType, item.description);
         copiedItem.create().then((createdItem) => {
-            //this.notifyListeners(new mwf.Event("crud", "created", "MediaItem", createdItem));
+            this.addItemToListview(createdItem);
+            this.lastUpdatedItemId = createdItem._id; // Keep track of the copied item
         });
+    }
+
+    // Override onresume to scroll to the updated/created item
+    async onresume() {
+        super.onresume();
+        if (this.lastUpdatedItemId) {
+            // Use a timeout to ensure the view has completed rendering
+            setTimeout(() => {
+                const itemView = this.getItemviewFromListview(this.lastUpdatedItemId);
+                if (itemView) {
+                    itemView.scrollIntoView({ behavior: "smooth", block: "center" });
+                }
+            }, 100);
+            this.lastUpdatedItemId = null; // Reset the tracker
+        }
+    }
+
+    // Method to add an item to the list view with duplication check
+    addItemToListview(item) {
+        // Check if the item has already been added
+        if (this.addedItemIds.has(item._id)) {
+            console.log("addToListview(): Item already added: " + item._id);
+            return;
+        }
+
+        // Call the framework method to add the item to the listview
+        this.addToListview(item);
+        this.addedItemIds.add(item._id); // Track the added item
     }
 }
