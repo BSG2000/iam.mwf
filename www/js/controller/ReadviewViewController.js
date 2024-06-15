@@ -67,7 +67,17 @@ export default class ReadviewViewController extends mwf.ViewController {
      * NOTE: return false if the view shall not be returned to, e.g. because we immediately want to display its previous view. Otherwise, do not return anything.
      */
     async onReturnFromNextView(nextviewid, returnValue, returnStatus) {
-        // TODO: check from which view, and possibly with which status, we are returning, and handle returnValue accordingly
+        // Überprüfen, von welcher Ansicht zurückgekehrt wird und Rückgabewerte entsprechend behandeln
+        if (returnValue) {
+            if (returnValue.updatedItem) {
+                // Ansicht aktualisieren
+                this.viewProxy.update({ item: returnValue.updatedItem });
+            } else if (returnValue.deletedItem) {
+                // Ansicht wechseln
+                this.previousView();
+                return false;
+            }
+        }
     }
 
     /*

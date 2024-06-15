@@ -46,7 +46,7 @@ export default class EditviewViewController extends mwf.ViewController {
             this.showDeleteConfirmationDialog(mediaItem);
         }));
 
-        this.viewProxy.bindAction("saveItem", (() => {
+        this.viewProxy.bindAction("saveItem", ((event) => {
             this.saveItem(mediaItem);
         }));
 
@@ -113,7 +113,16 @@ export default class EditviewViewController extends mwf.ViewController {
      * NOTE: return false if the view shall not be returned to, e.g. because we immediately want to display its previous view. Otherwise, do not return anything.
      */
     async onReturnFromNextView(nextviewid, returnValue, returnStatus) {
-        // TODO: check from which view, and possibly with which status, we are returning, and handle returnValue accordingly
+        // Überprüfen, von welcher Ansicht zurückgekehrt wird und Rückgabewerte entsprechend behandeln
+        if (returnValue) {
+            if (returnValue.updatedItem) {
+                // Ansicht aktualisieren
+                this.viewProxy.update({ item: returnValue.updatedItem });
+            } else if (returnValue.deletedItem) {
+                // Ansicht wechseln
+                this.previousView();
+            }
+        }
     }
 
     /*
