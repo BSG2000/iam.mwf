@@ -33,10 +33,10 @@ export class MediaItem extends EntityManager.Entity {
     description;
     srcType;
 
-    constructor(title, src, contentType) {
+    constructor(title, src, contentType, description) {
         super();
         this.title = title;
-        this.description = "No description available";
+        this.description = description;
         this.added = Date.now();
         this.src = src;
         this.srcType  = null;
@@ -62,8 +62,3 @@ export class MediaItem extends EntityManager.Entity {
         }
     }
 }
-
-
-
-
-

@@ -62,6 +62,7 @@
         <ul>
             <li class="mwf-li-singletitle mwf-menu-item" data-mwf-targetaction="deleteItem">Löschen</li>
             <li class="mwf-li-singletitle mwf-menu-item" data-mwf-targetaction="editItem">Editieren</li>
+            <li class="mwf-li-singletitle mwf-menu-item" data-mwf-targetview="mediaEditview">Editieren (FRM)</li>
         </ul>
     </main>
 </div>
@@ -116,12 +117,17 @@
         <header>
             <button class="mwf-imgbutton mwf-img-sandwich mwf-left-align"></button>
             <h1 class="mwf-left-align">{{#if item.created}}Editieren: {{item.title}}{{else}}Neues Medium{{/if}}</h1>
-            <button class="mwf-imgbutton mwf-img-delete mwf-right-align" on-click="deleteItem"
+            <button class="mwf-imgbutton mwf-img-delete mwf-right-align"
+                    disabled="{{#unless item.created}}disabled{{/unless}}" type="button" on-click="deleteItem"
                     form="mediaItemForm"></button>
-            <button class="mwf-imgbutton mwf-img-disk mwf-right-align" on-click="saveItem"
+            <button class="mwf-imgbutton mwf-img-disk mwf-right-align" type="button" on-click="saveItem"
                     form="mediaItemForm"></button>
         </header>
         <main class="mwf-scrollview">
+            <!-- Vorschaubild Container -->
+            <div id="preview-container">
+                <img src="{{item.src}}" alt="Vorschaubild">
+            </div>
             <form id="mediaItemForm" on-submit="submitForm">
                 <fieldset class="mwf-material">
                     <legend>URL</legend>

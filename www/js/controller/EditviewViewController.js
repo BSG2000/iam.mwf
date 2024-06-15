@@ -12,6 +12,7 @@ export default class EditviewViewController extends mwf.ViewController {
 
     // custom instance attributes for this controller
     viewProxy;
+    previewImage;
 
     constructor() {
         super();
@@ -25,19 +26,66 @@ export default class EditviewViewController extends mwf.ViewController {
     async oncreate() {
         // initialize the view with data and event listeners
         var mediaItem = this.args.item;
-        this.viewProxy = this.bindElement("mediaEditviewTemplate", {item: mediaItem}, this.root).viewProxy;
+        this.viewProxy = this.bindElement("mediaEditviewTemplate", { item: mediaItem }, this.root).viewProxy;
+
+        // Vorschaubild-Element abrufen
+        this.previewImage = this.root.querySelector("#previewImage");
+
+        // Event-Listener für das src Eingabefeld hinzufügen
+        const srcInput = this.root.querySelector("input[name='src']");
+        srcInput.addEventListener("input", (event) => {
+            this.previewImage.src = event.target.value;
+        });
+
         this.viewProxy.bindAction("deleteItem", (() => {
-            mediaItem.delete().then(() => {
-                this.notifyListeners(new mwf.Event("crud", "deleted", "MediaItem", mediaItem._id));
-                this.previousView({deletedItem: mediaItem});
-            })
+            this.showDeleteConfirmationDialog(mediaItem);
         }));
 
+        this.viewProxy.bindAction("saveItem", ((event) => {
+            this.saveItem(mediaItem);
+        }));
 
         // Call super.oncreate() to complete setup
         super.oncreate();
     }
 
+    showDeleteConfirmationDialog(mediaItem) {
+        this.showDialog("deleteConfirmationDialog", {
+            item: mediaItem,
+            actionBindings: {
+                cancelDelete: (() => {
+                    this.hideDialog();
+                }),
+                confirmDelete: (() => {
+                    mediaItem.delete().then(() => {
+                        this.notifyListeners(new mwf.Event("crud", "deleted", "MediaItem", mediaItem._id));
+                        this.previousView({ deletedItem: mediaItem });
+                    });
+                    this.hideDialog();
+                })
+            }
+        });
+    }
+
+    saveItem(mediaItem) {
+        console.log("saveItem method called");
+        // Werte aus den Formularelementen abrufen
+        const form = this.root.querySelector("#mediaItemForm");
+        const formData = new FormData(form);
+        mediaItem.src = formData.get("src");
+        mediaItem.title = formData.get("title");
+        mediaItem.description = formData.get("description");
+
+        if (!mediaItem.created) {
+            mediaItem.create().then(() => {
+                this.previousView();
+            });
+        } else {
+            mediaItem.update().then(() => {
+                this.previousView();
+            });
+        }
+    }
 
     /*
      * for views that initiate transitions to other views
@@ -81,6 +129,4 @@ export default class EditviewViewController extends mwf.ViewController {
 
         // TODO: implement action bindings for dialog, accessing dialog.root
     }
-
-
 }

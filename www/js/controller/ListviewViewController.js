@@ -69,7 +69,6 @@ export default class ListviewViewController extends mwf.ViewController {
     // Funktion zum Aktualisieren des CRUD-Modus Indikators
     updateCrudModeIndicator() {
         this.crudModeIndicator.textContent = MyApplication.currentCRUDScope;
-
     }
 
     // Funktion zum Umschalten des CRUD-Modus
@@ -160,7 +159,7 @@ export default class ListviewViewController extends mwf.ViewController {
     }
 
     createNewItem() {
-        var newItem = new entities.MediaItem("m", "https://picsum.photos/100/100", "image/jpeg");
+        var newItem = new entities.MediaItem("m", "https://picsum.photos/100/100", "image/jpeg", "No Description available");
         this.nextView("mediaEditview", {item: newItem});
     }
 

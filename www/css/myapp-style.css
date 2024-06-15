@@ -8,3 +8,32 @@
     display: flex;
     align-items: center;
 }
+
+#previewImage {
+    display: block;
+    margin: 10px auto;
+    max-width: 100%;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    padding: 5px;
+}
+
+/* Vorschaubild Container */
+#preview-container {
+    position: relative;
+    text-align: center;
+    margin-bottom: 1rem;
+    margin-top: 1rem;
+}
+
+#preview-container img {
+    max-width: 100%;
+    max-height: 300px;
+    display: inline-block;
+}
+
+/* Z-Index und Positionierung für das Vorschaubild */
+#preview-container img {
+    position: relative;
+    z-index: 10;
+}
