@@ -161,17 +161,7 @@ export default class ListviewViewController extends mwf.ViewController {
 
     createNewItem() {
         var newItem = new entities.MediaItem("m", "https://picsum.photos/100/100", "image/jpeg");
-        this.showDialog("mediaItemDialog", {
-            item: newItem, actionBindings: {
-                submitForm: ((event) => {
-                    event.original.preventDefault();
-                    newItem.create().then(() => {
-                        //     this.addToListview(newItem);
-                    });
-                    this.hideDialog()
-                })
-            }
-        });
+        this.nextView("mediaEditview", {item: newItem});
     }
 
 }

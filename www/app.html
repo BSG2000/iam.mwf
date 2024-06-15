@@ -105,9 +105,42 @@
         <h2>Möchten Sie {{item.title}} wirklich löschen?</h2>
         <div class="mwf-buttonbar">
             <button class="mwf-left-align mwf-button" type="button" on-click="cancelDelete">Abbrechen</button>
-            <button class="mwf-button-prio mwf-right-align mwf-button" type="button" on-click="confirmDelete">Löschen</button>
+            <button class="mwf-button-prio mwf-right-align mwf-button" type="button" on-click="confirmDelete">Löschen
+            </button>
         </div>
     </main>
+</div>
+<!-- Editieransicht -->
+<div class="mwf-view" id="mediaEditview" data-mwf-viewcontroller="EditviewViewController">
+    <div class="mwf-template mwf-databind" data-mwf-templatename="mediaEditviewTemplate">
+        <header>
+            <button class="mwf-imgbutton mwf-img-sandwich mwf-left-align"></button>
+            <h1 class="mwf-left-align">{{#if item.created}}Editieren: {{item.title}}{{else}}Neues Medium{{/if}}</h1>
+            <button class="mwf-imgbutton mwf-img-delete mwf-right-align" on-click="deleteItem"
+                    form="mediaItemForm"></button>
+            <button class="mwf-imgbutton mwf-img-disk mwf-right-align" on-click="saveItem"
+                    form="mediaItemForm"></button>
+        </header>
+        <main class="mwf-scrollview">
+            <form id="mediaItemForm" on-submit="submitForm">
+                <fieldset class="mwf-material">
+                    <legend>URL</legend>
+                    <input name="src" type="text" value="{{item.src}}" required/>
+                </fieldset>
+                <fieldset class="mwf-material">
+                    <legend>Titel</legend>
+                    <input name="title" type="text" value="{{item.title}}" required/>
+                </fieldset>
+                <fieldset class="mwf-material">
+                    <legend>Beschreibung</legend>
+                    <textarea name="description" required>{{item.description}}</textarea>
+                </fieldset>
+            </form>
+        </main>
+        <footer>
+            <button class="mwf-back mwf-imgbutton mwf-img-backward"></button>
+        </footer>
+    </div>
 </div>
 </body>
 </html>
