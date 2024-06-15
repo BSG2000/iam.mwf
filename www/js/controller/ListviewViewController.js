@@ -1,8 +1,5 @@
-/**
- * @author Jörn Kreutel
- */
-import {mwf, MyApplication} from "../Main.js";
-import {entities} from "../Main.js";
+import { mwf, MyApplication } from "../Main.js";
+import { entities } from "../Main.js";
 
 export default class ListviewViewController extends mwf.ViewController {
 
@@ -106,8 +103,6 @@ export default class ListviewViewController extends mwf.ViewController {
      * TODO: delete if no listview is used or if item selection is specified by targetview/targetaction
      */
     onListItemMenuItemSelected(menuitemview, itemobj, listview) {
-        // implement how selection of the option menuitemview for itemobj shall be handled
-
         super.onListItemMenuItemSelected(menuitemview, itemobj, listview);
     }
 
@@ -163,5 +158,10 @@ export default class ListviewViewController extends mwf.ViewController {
         this.nextView("mediaEditview", {item: newItem});
     }
 
+    copyItem(item) {
+        var copiedItem = new entities.MediaItem(item.title + " (Kopie)", item.src, item.contentType, item.description);
+        copiedItem.create().then((createdItem) => {
+            //this.notifyListeners(new mwf.Event("crud", "created", "MediaItem", createdItem));
+        });
+    }
 }
-
