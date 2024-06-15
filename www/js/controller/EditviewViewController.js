@@ -13,6 +13,7 @@ export default class EditviewViewController extends mwf.ViewController {
     // custom instance attributes for this controller
     viewProxy;
     previewImage;
+    srcInput;
 
     constructor() {
         super();
@@ -29,13 +30,17 @@ export default class EditviewViewController extends mwf.ViewController {
         this.viewProxy = this.bindElement("mediaEditviewTemplate", { item: mediaItem }, this.root).viewProxy;
 
         // Vorschaubild-Element abrufen
-        this.previewImage = this.root.querySelector("#previewImage");
+        this.srcInput = this.root.querySelector("input[name='src']");
+        this.previewImage = this.root.querySelector("#preview-container img");
 
         // Event-Listener für das src Eingabefeld hinzufügen
-        const srcInput = this.root.querySelector("input[name='src']");
-        srcInput.addEventListener("input", (event) => {
+        if (this.srcInput) {
+        this.srcInput.addEventListener("input", (event) => {
+                if (this.previewImage) {
             this.previewImage.src = event.target.value;
+                }
         });
+        }
 
         this.viewProxy.bindAction("deleteItem", (() => {
             this.showDeleteConfirmationDialog(mediaItem);
@@ -45,8 +50,22 @@ export default class EditviewViewController extends mwf.ViewController {
             this.saveItem(mediaItem);
         }));
 
+        this.viewProxy.bindAction("fillDefaultUrl", (() => {
+            this.fillDefaultUrl();
+        }));
+
         // Call super.oncreate() to complete setup
         super.oncreate();
+    }
+
+    fillDefaultUrl() {
+        const defaultUrl = "https://picsum.photos/500/500";
+        if (this.srcInput) {
+        this.srcInput.value = defaultUrl;
+        }
+        if (this.previewImage) {
+        this.previewImage.src = defaultUrl;
+    }
     }
 
     showDeleteConfirmationDialog(mediaItem) {

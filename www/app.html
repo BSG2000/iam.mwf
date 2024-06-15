@@ -120,6 +120,11 @@
             <button class="mwf-imgbutton mwf-img-delete mwf-right-align"
                     disabled="{{#unless item.created}}disabled{{/unless}}" type="button" on-click="deleteItem"
                     form="mediaItemForm"></button>
+            <button class="mwf-imgbutton mwf-img-paste mwf-right-align"
+                    disabled="{{#if item.created}}disabled{{/if}}"
+                    type="button"
+                    on-click="fillDefaultUrl"
+                    form="mediaItemForm"></button>
             <button class="mwf-imgbutton mwf-img-disk mwf-right-align" type="button" on-click="saveItem"
                     form="mediaItemForm"></button>
         </header>
