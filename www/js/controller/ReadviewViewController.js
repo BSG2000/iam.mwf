@@ -72,6 +72,7 @@ export default class ReadviewViewController extends mwf.ViewController {
             if (returnValue.updatedItem) {
                 // Ansicht aktualisieren
                 this.viewProxy.update({ item: returnValue.updatedItem });
+                this.notifyListeners(new mwf.Event("crud", "updated", "MediaItem", returnValue.updatedItem));
             } else if (returnValue.deletedItem) {
                 // Ansicht wechseln
                 this.previousView();
